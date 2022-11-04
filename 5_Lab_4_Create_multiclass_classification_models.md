@@ -66,6 +66,32 @@
    - Click on the service name and go to Service Credentials. If there are credentials listed, click on the down arrow and copy the API key, instance ID and URL
    - If there aren't any credentials listed, click New Credential > Add and click on the down arrow and copy the API key, instance ID and URL
 
-//module 3
+3. Make birdsong predictions a Node-RED application
+   - In this section, you create a basic Node-RED flow that will make birdsong predictions against the birdsong classifiers that you created in the previous sections of this lab
+   - You will be reusing the flow and OSP service that you created in Labs 1, 2, and 3
+   - Open your cats and dogs flow in Node-RED. This can be accessed through your dashboard in IBM Cloud
+   - Create a new tab and give the flow a name, such as BirdSong. Then, click Done
+   - Select all the nodes in the cats and dogs flow
+   - Copy to the clipboard
+   - Paste into the new BirdSong tab (flow)
+   - Delete the timestamp and Build Payload Values - Dog nodes because they aren’t required for the birdsong data set
+   - Double-click the Machine Learning (WML) (Run Prediction) node
+   - Select Add new wml-config and click the Pencil icon
+   - Use the Watson Machine Learning credentials for the instance that you created in the first section of this lab to complete the configuration for the WML (Run Prediction) node. When you're done, click Add
+   - Click Refetch Model List. Then, select one of your new model and deployment combinations
+   - If the list does not appear, close the configuration, click Deploy, refresh the page, and open the configuration again
+   - Click Done
+   - Using copy and paste, duplicate the Machine Learning node. Run connections from the Setup for Prediction function node to both Run Prediction nodes, and connections from both to the Just the results function node
+   - Connecting these nodes allows you to run parallel predictions against multiple classifiers
+   - Select the second node and configure it for a different model and deployment combination
+   - Save your changes
+   - You will initially run a hardcoded test against what is a cat or dog sound to test that the models are working
+   - Initiate the Hard Coded Test node
+   - Switch to the Debug console
+   - All your classifiers should be predicting with low probability matches against all their classes because the data set is from the cats and dogs audio files
+   - Click the file inject node and select a birdsong audio file. You can use one of the sample .wav audio files from the GitHub repository
+   - The predictions should come up with low probabilities scores for most classes. Only the top scoring classification is shown, in this case it is the Common Swift at 30%
+   - By ignoring the Other predictions, your application can now report on all classes across all of its classifiers for probability scores greater than a threshold of, say, > 10%
+   - You should now have a Node-RED flow that is able to predict a bird against one of the model deployments that you made. In the next lab, you will add the other models
 
  - [Go to Next Module](./6_IBM_Watson_Visual_Recognition.md)
