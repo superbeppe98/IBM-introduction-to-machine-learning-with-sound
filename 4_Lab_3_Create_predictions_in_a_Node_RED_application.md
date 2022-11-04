@@ -6,6 +6,90 @@
   - Be sure that you installed the IBM Cloud command-line interface and other course prerequisites, and completed all previous labs
   - The code for this lab is on GitHub
 
+1. Predict the animal sound
+   - In this section, you will use Node-RED and dummy data to make a dog or cat prediction against the machine learning model that you created in Lab 2
+   - Log in to IBM Cloud
+   - If you haven’t created an instance of Node-RED before, you will need to create one. Detailed instructions are available in the documentation here
+   - The following bullet points summarise the process. Skip to step 3 if you already have an instance of Node-RED or have followed the documentation link
+   - In IBM Cloud, click Catalog
+     - Search for Node-RED
+     - Click the software tab and select the Node-RED application
+     - Click Create app
+     - Enter an application name, leave the resource group as default and select a Cloudant service. If you already have a Cloudant service, you may need to select this from the dropdown list if you are using the lite plan
+   - Click Create 
+   - From the Node-RED page, click on Deploy your App
+   - You need to create an API key for the toolchain. To do this, click New and select OK, this generates and populates an API key in the field
+   - Select the region and space you want to deploy your toolchain to and make sure that the hostname is unique. This is because it will be publicly addressable. The domain for this application does not need to match the domain that you used for Watson Studio
+   - Click Create in the top right-hand corner. It might take some time for your instance to be created and started
+   - When the page says Success, go back to your IBM Cloud resource list and search for your Node-RED application under Cloud Foundry Apps
+   - Click on the name of the app
+   - When your instance of Node-RED has the status of started, click Visit App URL. The status could take a few moments to say 'started'
+   - Optional: Secure your Node-RED instance with a user name and password
+   - Click Next and Next again to complete the setup. Then, click Go to your Node-RED flow editor
+   - Log in in to your Node-RED instance by using the credentials that you previously specified
+   - Next, you will be importing a prebuilt flow into your Node-RED instance. This flow will allow you to upload a file and run it through the machine learning model that you created in Lab 2
+   - Open a new tab and go to the GitHub repository for this course and select the noderedflows folder
+   - Select the predictionflow.json file
+   - Click Raw and copy the file contents to your clipboard. By clicking Raw, you can copy the raw data without having any unnecessary data on the clipboard that will result in errors when pasting
+   - Back in your Node-RED instance, click the menu icon and click Import > Clipboard
+   - Paste your clipboard contents into the field, select New Flow and click Import
+   - You might see a number of unknown nodes that appear in the imported flow, particularly if you created your Node-RED instance for this lab. This is because the Node-RED starter kit comes preinstalled only with certain nodes. You will install the additional nodes in the next steps
+   - Click the menu and click Manage palette. Then, select the Install tab
+   - Search for watson-machine-learning
+   - Click Install. Then, click Install again to confirm the installation
+   - Install two more nodes: node-red-contrib-browser-utils, which contains a microphone, and node-red-node-base64. The flow should now show all nodes
+   - Click Deploy. Ignore any warnings about the new nodes. You will configure those nodes in the next few steps
+   - Your application is now deployed and is ready for you to test. Before experimenting with an audio file, you will start with a hardcoded test to check that the prediction is working
+   - The hardcoded test is the subflow near the bottom
+   - The hardcoded values are specified in the Build Payload Values function node. Note that the columns start from COLUMN2 because COLUMN1 is the value that the machine learning model will be predicting
+   - Initiate the flow by using the blue tab on the left of the Hard Coded Test node
+   - Click the Debug tab. Depending on your version of Node-RED, you might need to click the Debug icon to show the debug messages pane
+   - You should see a "No API Key set in configuration" error message. This occurs because the Watson Machine Learning node (Run Prediction) has not been configured
+   - Double-click the machine learning node (Run Prediction)
+   - Change the WML Connection Field to add new wml-config and click the Pencil icon to edit the WML Connection configuration
+   - Then, complete the configuration by using your machine learning credentials. The Access Key can be any non-empty value
+   - To find your credentials, select the Watson Machine Learning service from IBM Cloud and click Credentials. Then, click Update when you're done
+   - Click Refetch the Model List to load your credentials
+   - This will temporarily hide the mode and deployments fields because the node invokes Watson Machine Learning APIs to retrieve a revised list. After the new lists are retrieved, the fields will reappear. Depending on network latency, this might a while to complete. If the fields are not displayed, click Done, click Deploy, and open the node again
+   - Set the mode to Run Prediction. Then, select your model and deployment
+   - Click Done to save the configuration and deploy the updated flow
+   - Initiate the flow by clicking the left tab
+   - Check the output. In this hardcoded test, there is an 99% probability that the sound was of a cat
+   - You can now make predictions of sampled audio files, but you can't feed an audio file directly into the Node-RED flow. To be able to do this, you need the audio sampling functionality to be available as an API. You will do this in the next section
 
+2. Deploy and test the signal processing application
+   - In this section, you deploy a sample Python Flask application to IBM Cloud. This application provides an API that will take an audio file as input, perform signal processing, and generate a response suitable to use with your machine learning model
+   - If you haven't already, install the IBM Cloud CLI
+   - Open a terminal window and navigate to the signal processing application you should have cloned in lab 1
+   - If you missed this step, clone the Git repository that contains the application:
+       - ```git clone https://github.com/ibm-early-programs/animal-sounds```
+   - Navigate to animals-sounds/src directory
+   - The application that you will be deploying is a Python Flask application that provides an API. This produces output in a format that you can use in Node-RED
+   - You don’t need to make any changes to the source code, but do you need to modify the manifest.yml file which can be found in the src folder
+   - Change the host name so that it is unique. Note the host name because you will need it for subsequent steps
+   - Save your changes
+   - From the terminal, log in to the IBM Cloud CLI if you aren't already:
+       -  ```ibmcloud login```
+   - If you get the federated user error, add -sso to the command. If you get the option, select the account you want to use
+   - From the command line, make sure you are in the /src directory, then push your application to IBM Cloud:
+       - ```ibmcloud app push```
+   - Once the deployment has finished, you should see a message in the logs saying App started
+   - Open your IBM Cloud dashboard and search for the application you just deployed using the name you provided in the manifest file. The application will be listed under Cloud Foundry Apps. Click on the app
+   - Check that the app is running and click Visit App URL
+   - A 404 error should appear, at which point, add /audio to the end of the URL
+   - Click either Upload or Perform OSP to select an audio file from the sounds directory in your project on your local machine
+   - Each command performs similar operations. The Upload button sends the file as part of a multipart form, and the Perform OSP button sends it as a REST call
+   - If you see a series of numbers, your application is running, and the API is ready to use in your Node-RED flow
 
-[Go to Next Module](./6_IBM_Watson_Visual_Recognition.md)
+3. Run predictions against the audio files
+   - In this section, you invoke the API that you deployed to IBM Cloud in the previous section from your Node-RED flow. The API allows audio input to be processed and then to run the response into your machine learning model
+   - Open your Node-RED flow
+   - Double-click the Perform OSP HTTP Request node
+   - This node allows you to invoke a REST API
+   - Change the URL to https://<your-host-name>.<prefix>mybluemix.net/audio/nodered. Then, deploy your changes
+   - Use either the microphone node or the file inject node to initiate the flow. Unless you have a cat or dog around, it’s probably better to use the file inject node
+   - Check the output to verify the results
+   - You now have an application that takes audio tracks as input and processes a signal from the audio file to obtain a series of numbers that it uses to make a machine learning-based prediction as to whether the sound is from a cat or a dog
+   - You can expand the components that you developed in these first three labs to other sound-based machine learning models
+
+- [Go to Next Module](./5_Lab_4_Create_multiclass_classification_models.md)

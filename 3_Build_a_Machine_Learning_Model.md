@@ -60,4 +60,4 @@
    - In the list of services, click your machine learning service and then click Service credentials
    - Make a note of the service credentials because you will need them in the next lab
 
-[Go to Next Module](./5_Lab_4_Create_multiclass_classification_models.md)
+[Go to Next Module](./4_Lab_3_Create_predictions_in_a_Node_RED_application.md)
