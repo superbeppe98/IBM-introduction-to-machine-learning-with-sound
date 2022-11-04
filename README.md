@@ -1,14 +1,13 @@
 # IBM-introduction-to-machine-learning-with-sound
 
 ## Course Syllabus
-- Module 1: [IBM Watson Studio](./1_What_is_Blockchain%3F.md)
-
-- Lab 1: Gather and prepare the data
-- Lab 2: Build a machine learning model
-- Lab 3: Create predictions in a Node-RED application
-- Lab 4: Create multiclass classification models
-- IBM Watson Visual Recognition
-- Lab 5: Create UIs and integrate visual recognition
+- Module 1: [IBM Watson Studio](./1_IBM_Watson_Studio.md)
+- Module 2: [Lab 1: Create a Watson Studio Project](./2_Lab_1_Create_a_Watson_Studio_Project.md)
+- Module 3: [Lab 2: Build a Machine Learning Model](./3_Build_a_Machine_Learning_Model.md)
+- Module 4: [Lab 3: Create predictions in a Node-RED application](./4_Lab_3_Create_predictions_in_a_Node_RED_application.md)
+- Module 5: [Lab 4: Create multiclass classification models](./5_Lab_4_Create_multiclass_classification_models.md)
+- Module 6: [IBM Watson Visual Recognition](./6_IBM_Watson_Visual_Recognition.md)
+- Module 7: [Lab 5: Create UIs and integrate visual recognition](./7_Lab_5_Create_UIs_and_integrate_visual_recognition.md)
 
 <br>
 
