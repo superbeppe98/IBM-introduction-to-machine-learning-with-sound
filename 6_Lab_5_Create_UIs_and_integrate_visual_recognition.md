@@ -133,60 +133,36 @@
        - ```return msg;```
    - Now, if you try to run a prediction without passing in an audio file, the application will handle the error and return it as a message
    - In the second function node, name it Good Response and paste in the following code:
-
-msg.payload = {'response' : 'received'};
-return msg;
-If an audio file is successfully passed through the API, it returns the message received.
-
-The flow should look like this:
-
-Because the birdsong data set has up to nine models, you need nine machine learning nodes. Therefore, in the next few steps, you will clean up the flows and create space for the additional nodes.
-
-Delete the links surrounding the Run Prediction node.
-
-Move the Run Prediction node to the bottom of all the nodes. Then, add a link output node and join it to the Setup for Prediction node.
-
-Add a link input and a link output node around the Run Prediction node.
-
-Add a link input node before the Just the Results node. Give the link nodes appropriate names so that it's easier to identify them.
-
-The flow should now look like this:
-
-Wire the link nodes as shown in the following image:
-
-Add eight more machine learning nodes below the Run Prediction node and link them all to the link input and link output nodes:
-
-Configure each machine learning model to the models and deployments that you created in Lab 4.
-
-For example, as shown in the following image, you see five models for this Watson Machine Learning instance; therefore, assign each node to a different model.
-
-In the Just the Results function node, paste in the following code:
-
-msg.result = msg.payload.values[0].splice(152);
-msg.resultColumns = msg.payload.fields.splice(152);
-
-msg.payload = {
-    'result' : msg.result,
-    'columns' : msg.resultColumns
-};
-
-return msg;
-This code makes the result easier to read.
-
-After the Just the Results node, delete the link to the http response node and add a websocket output node.
-
-A WebSocket is a one-way communication link. Your web page is expecting responses through this WebSocket link. Every time the Machine Learning service makes a prediction, it updates the web page.
-
-Now, the websocket node needs to be configured to publish updates on the address that the browser JavaScript is listening on. The JavaScript code provided to you includes the following lines where the WebSocket URI is defined:
-
-  // This needs to point to the web socket in the Node-RED flow
-  // ... in this case it's ws/birdsong
-  wsUri += "//" + loc.host + "/ws/birdsong";
-Configure your websocket node path to /ws/birdsong.
-
-Now, if you go to the birdsong web page, you should be able to select an audio file and get a result against each machine learning model.
-
-The following example shows the Common Swift being processed in the results table. You can see from the results that the Common Swift is the highest probability score with 0.38. There are repeated bird names in the table because some birds have been incorporated into more than one machine learning model. 
-
-
-You've now created a second simple web page that can show the results of your machine learning models.
+       - ```msg.payload = {'response' : 'received'};```
+       - ```return msg;```
+   - If an audio file is successfully passed through the API, it returns the message received
+   - The flow should look like this:
+   - Because the birdsong data set has up to nine models, you need nine machine learning nodes. Therefore, in the next few steps, you will clean up the flows and create space for the additional nodes
+   - Delete the links surrounding the Run Prediction node
+   - Move the Run Prediction node to the bottom of all the nodes. Then, add a link output node and join it to the Setup for Prediction node
+   - Add a link input and a link output node around the Run Prediction node
+   - Add a link input node before the Just the Results node. Give the link nodes appropriate names so that it's easier to identify them
+   - The flow should now look like this:
+   - Wire the link nodes as shown in the following image:
+   - Add eight more machine learning nodes below the Run Prediction node and link them all to the link input and link output nodes:
+   - Configure each machine learning model to the models and deployments that you created in Lab 4
+   - For example, as shown in the following image, you see five models for this Watson Machine Learning instance; therefore, assign each node to a different model
+   - In the Just the Results function node, paste in the following code:
+       - ```msg.result = msg.payload.values[0].splice(152);```
+       - ```msg.resultColumns = msg.payload.fields.splice(152);```
+       - ```msg.payload = {```
+       - ```'result' : msg.result,```
+       - ```'columns' : msg.resultColumns```
+       - ```};```
+       - ```return msg;```
+   - This code makes the result easier to read
+   - After the Just the Results node, delete the link to the http response node and add a websocket output node
+   - A WebSocket is a one-way communication link. Your web page is expecting responses through this WebSocket link. Every time the Machine Learning service makes a prediction, it updates the web page
+   - Now, the websocket node needs to be configured to publish updates on the address that the browser JavaScript is listening on. The JavaScript code provided to you includes the following lines where the WebSocket URI is defined:
+       - ```// This needs to point to the web socket in the Node-RED flow```
+       - ```// ... in this case it's ws/birdsong```
+       - ```wsUri += "//" + loc.host + "/ws/birdsong";```
+       - ```Configure your websocket node path to /ws/birdsong.```
+   - Now, if you go to the birdsong web page, you should be able to select an audio file and get a result against each machine learning model.
+   - The following example shows the Common Swift being processed in the results table. You can see from the results that the Common Swift is the highest probability score with 0.38. There are repeated bird names in the table because some birds have been incorporated into more than one machine learning model
+   - You've now created a second simple web page that can show the results of your machine learning models
